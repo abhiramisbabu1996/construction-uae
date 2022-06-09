@@ -42,13 +42,13 @@
         </record>
 		<menuitem id="hiworth_telecom.main_menu_telecom_root"  name="Rentals" groups="make_invisible_telecom"/>
 
-		<record id="make_invisible_know" model="res.groups">
+<!-- 		<record id="make_invisible_know" model="res.groups">
             <field name="name">Visible Knowledge Menu</field>
         </record>
         <record model="ir.ui.menu" id="knowledge.menu_document">
             <field name="groups_id" eval="[(5,ref('make_invisible_know'))]"/>
         </record>
-		<menuitem id="knowledge.menu_document"  name="Knowledge" groups="make_invisible_know"/>
+		<menuitem id="knowledge.menu_document"  name="Knowledge" groups="make_invisible_know"/> -->
 
         <record id="make_invisible_log" model="res.groups">
             <field name="name">Visible Log Report Menu</field>
@@ -59,13 +59,13 @@
 		<menuitem id="auditlog.menu_audit_main_root"  name="Log Report" groups="make_invisible_log"/>
 
 
-        <record id="make_invisible_dashboard" model="res.groups">
+        <!-- <record id="make_invisible_dashboard" model="res.groups">
             <field name="name">Visible Dashboard Menu</field>
         </record>
         <record model="ir.ui.menu" id="base.menu_reporting">
             <field name="groups_id" eval="[(5,ref('make_invisible_dashboard'))]"/>
         </record>
-		<menuitem id="base.menu_reporting"  name="Dashboard" groups="make_invisible_dashboard"/>
+		<menuitem id="base.menu_reporting"  name="Dashboard" groups="make_invisible_dashboard"/> -->
 
         <record id="make_invisible_marketing" model="res.groups">
             <field name="name">Visible Marketing Menu</field>

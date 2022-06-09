@@ -1117,6 +1117,21 @@
 				</xpath>
 			</field>
 		</record>
+   <!--  menu hide -->
+   <record id="make_invisible_dashboard" model="res.groups">
+            <field name="name">Visible Dashboard Menu</field>
+        </record>
+        <record model="ir.ui.menu" id="base.menu_reporting">
+            <field name="groups_id" eval="[(5,ref('make_invisible_dashboard'))]"/>
+        </record>
+    <menuitem id="base.menu_reporting"  name="Dashboard" groups="make_invisible_dashboard"/>
+        <record id="make_invisible_know" model="res.groups">
+            <field name="name">Visible Knowledge Menu</field>
+        </record>
+        <record model="ir.ui.menu" id="knowledge.menu_document">
+            <field name="groups_id" eval="[(5,ref('make_invisible_know'))]"/>
+        </record>
+    <menuitem id="knowledge.menu_document"  name="Knowledge" groups="make_invisible_know"/>
 
     </data>
 </openerp>
