@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+		<!-- asn code -->
 		<template id="custom_view" name="custom_view" inherit_id="web.assets_backend">
 			<xpath expr="." position="inside">
 				<link rel="stylesheet" href="/asn_baby_blue/static/src/css/styles.css" />
