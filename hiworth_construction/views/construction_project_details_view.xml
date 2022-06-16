@@ -70,10 +70,10 @@
 				<group>
 					<group col="2">
 						<field name="date_start" />
-						<field name="date_end" />
 					</group>
 					<group col="2">
-						<field name="estimated_cost" />
+						<field name="date_end" />
+						<!--						<field name="estimated_cost" />-->
 					</group>
 				</group>
 				
@@ -81,9 +81,18 @@
 					<field name="stage_id" widget="statusbar" clickable="True"
 						invisible="True" options="{'fold_field': 'fold'}" />
 				</xpath>
-				<xpath expr="//group/field[@name='date_deadline']" position="replace">
-					<field name="date_deadline" invisible="True" />
+<!--				<xpath expr="//group/field[@name='date_deadline']" position="replace">-->
+<!--					<field name="date_deadline" invisible="True" />-->
+<!--				</xpath>-->
+				<xpath expr="//field[@name='user_id']" position="attributes">
+					<attribute name="readonly">0</attribute>
+					<attribute name="string">Assigned by</attribute>
 				</xpath>
+				<xpath expr="//field[@name='reviewer_id']" position="attributes">
+					<attribute name="string">Assigned To</attribute>
+				</xpath>
+
+
 <!--				<xpath expr="//notebook/page[@string='Description']" position="before">-->
 <!--					<page string="Estimation">-->
 <!--						<field name="estimate_ids">-->
@@ -104,23 +113,51 @@
 					<attribute name="placeholder">Task Title</attribute>
 				</xpath>
 				<xpath expr="//notebook/page[@string='Description']" position="before">
-					<page string="Work List">
-						<field name="work_list">
-							<tree string="Task Work" editable="bottom">
-								<!-- <field name="line_no" /> -->
-								<field name="work_description" required="True" />
-								<field name="work_loc" required="True" string="Work Location" />
-								<field name="estimated_hrs" />
-								<field name="task_status" />
-								<field name="comments"/>
-<!--								<field name="qty_used" />-->
+					<page string="Estimation">
+						<field name="estimation_line_ids" nolabel="1">
+							<tree editable="bottom">
+								<field name="category_id"/>
+								<field name="work_id"/>
+<!--								<field name="employee_id" string="Supervisor"/>-->
+<!--								<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>-->
+								<field name="chainage_from"/>
+								<field name="chainage_to"/>
+<!--								<field name="side"/>-->
+<!--								<field name="length"/>-->
+<!--								<field name="no_labours"/>-->
+								<field name="qty_estimate"/>
+<!--								<field name="unit"/>-->
+<!--								<field name="rate"/>-->
+								<field name="estimate_cost"/>
+								<field name="start_date"/>
+<!--										<field name="duration"/>-->
+								<field name="finish_date"/>
 
-								<!-- <field name="unit_price" /> -->
-<!--								<field name="name" invisible="1" />-->
-								<!-- <field name="estimated_cost_sum" sum="Total" /> -->
+<!--										<field name="quantity"/>-->
+<!--										<field name="pre_qty"/>-->
+<!--										<field name="upto_date_qty"/>-->
+<!--								<field name="estimated_hrs" />-->
+								<field name="work_loc" required="True" string="Work Location" />
+<!--								<field name="subcontractor"/>-->
 							</tree>
 						</field>
 					</page>
+
+					<!--					<page string="Work List">-->
+					<!--						<field name="work_list">-->
+					<!--							<tree string="Task Work" editable="bottom">-->
+					<!--								&lt;!&ndash; <field name="line_no" /> &ndash;&gt;-->
+					<!--								<field name="work_description" required="True" />-->
+<!--								<field name="task_status" />-->
+<!--								<field name="comments"/>-->
+<!--&lt;!&ndash;								<field name="qty_used" />&ndash;&gt;-->
+
+<!--								&lt;!&ndash; <field name="unit_price" /> &ndash;&gt;-->
+<!--&lt;!&ndash;								<field name="name" invisible="1" />&ndash;&gt;-->
+<!--								&lt;!&ndash; <field name="estimated_cost_sum" sum="Total" /> &ndash;&gt;-->
+<!--							</tree>-->
+<!--						</field>-->
+<!--					</page>-->
 				</xpath>
 				<xpath expr="//notebook/page/group[2]" position="replace">
 					<group invisible="True">
@@ -199,12 +236,134 @@
 			</field>
 		</record>
 
+
+		<record id="estimation_form_iew" model="ir.ui.view">
+			<field name="name">estimation.form.view</field>
+			<field name="model">estimation.estimation</field>
+			<field name="arch" type="xml">
+			<form>
+				<sheet>
+					<group>
+						<group>
+							<field name="name"/>
+							<field name="project_id"/>
+							<field name="assigned_to"/>
+							<field name="start_date"/>
+							<field name="rate" string="Rate/sqft"/>
+						</group>
+						<group>
+							<field name="estimated_cost"/>
+							<field name="no_of_floors"/>
+							<field name="sqft"/>
+							<field name="end_date"/>
+						</group>
+					</group>
+
+					<notebook>
+							<page string="Estimation">
+								<field name="estimation_line_ids" nolabel="1">
+									<tree editable="bottom">
+										<field name="category_id"/>
+										<field name="work_id"/>
+										<field name="employee_id" string="Superisor"/>
+										<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
+										<field name="chainage_from"/>
+										<field name="chainage_to"/>
+										<field name="side"/>
+										<field name="length"/>
+										<field name="no_labours"/>
+										<field name="qty_estimate"/>
+										<field name="unit"/>
+										<field name="rate"/>
+										<field name="estimate_cost"/>
+										<field name="start_date"/>
+<!--										<field name="duration"/>-->
+										<field name="finish_date"/>
+<!--										<field name="quantity"/>-->
+<!--										<field name="pre_qty"/>-->
+<!--										<field name="upto_date_qty"/>-->
+										<field name="subcontractor"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+<!--					<notebook>-->
+<!--						<page string="Labour Details">-->
+<!--							<field name="line_ids">-->
+<!--								<tree editable="bottom">-->
+<!--										<field name="item_id" string="Work"/>-->
+<!--										<field name="no_labours"/>-->
+<!--										<field name="rate"/>-->
+<!--										<field name="payment_total"/>-->
+<!--										<field name="remarks" />-->
+<!--									</tree>-->
+<!--							</field>-->
+<!--						</page>-->
+<!--						<page string="Machineries">-->
+<!--							<field name="machine_ids">-->
+<!--								<tree editable="bottom">-->
+<!--									<field name="employee_id" />-->
+<!--									<field name="machinery_id" />-->
+<!--									<field name="working_hours"/>-->
+<!--									<field name="machinery_rent"/>-->
+<!--									<field name="operator_amt"/>-->
+<!--									<field name="expense"/>-->
+<!--								</tree>-->
+<!--								</field>-->
+<!--						</page>-->
+<!--						<page string="Materials">-->
+<!--							<field name="item_usage_ids">-->
+<!--								<tree editable="bottom">-->
+<!--									<field name="product_id" required="1" options="{'no_create': True, 'no_create_edit':True}" />-->
+<!--									<field name="rqrd_qty"/>-->
+<!--									<field name="rate"/>-->
+<!--									<field name="price"/>-->
+<!--								</tree>-->
+<!--							</field>-->
+<!--						</page>-->
+
+<!--					</notebook>-->
+
+				</sheet>
+			</form>
+			</field>
+		</record>
+
+
+
+
 		<record id="edit_project_changed" model="ir.ui.view">
 			<field name="name">project.project.form.changed</field>
 			<field name="model">project.project</field>
 			<field name="inherit_id" ref="project.edit_project" />
 			<field name="arch" type="xml">
 				<xpath expr="//notebook/page[@string='Team']" position="before">
+					<page string="Estimation">
+						<field name="estimation_line_ids" nolabel="1">
+							<tree editable="bottom">
+								<field name="category_id"/>
+								<field name="work_id"/>
+								<field name="employee_id" string="Superisor"/>
+								<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
+								<field name="chainage_from"/>
+								<field name="chainage_to"/>
+								<field name="side"/>
+								<field name="length"/>
+								<field name="no_labours"/>
+								<field name="qty_estimate"/>
+								<field name="unit"/>
+								<field name="rate"/>
+								<field name="estimate_cost"/>
+								<field name="start_date"/>
+<!--										<field name="duration"/>-->
+								<field name="finish_date"/>
+<!--										<field name="quantity"/>-->
+<!--										<field name="pre_qty"/>-->
+<!--										<field name="upto_date_qty"/>-->
+								<field name="subcontractor"/>
+							</tree>
+						</field>
+					</page>
 					<page string="Tasks"
 						groups="project.group_project_manager,hiworth_construction.group_estimation_user">
 
@@ -267,20 +426,20 @@
 						</field>-->
 					</page>
 
-					<page string="Extra Work" attrs="{'invisible':[('estimated_cost_extra','=', 0)]}">
-						<field name="extra_task_ids">
-							<tree>
-								<!-- <field name="line_no" /> -->
-								<field name="name" />
-								<field name="description" />
-								<field name="date_start" />
-								<field name="date_end" />
-								<field name="estimated_cost" />
-								<!-- <field name="name"/> -->
-								<!-- <field name="is_extra_work" /> -->
-							</tree>
-						</field>
-					</page>
+<!--					<page string="Extra Work" attrs="{'invisible':[('estimated_cost_extra','=', 0)]}">-->
+<!--						<field name="extra_task_ids">-->
+<!--							<tree>-->
+<!--								&lt;!&ndash; <field name="line_no" /> &ndash;&gt;-->
+<!--								<field name="name" />-->
+<!--								<field name="description" />-->
+<!--								<field name="date_start" />-->
+<!--								<field name="date_end" />-->
+<!--								<field name="estimated_cost" />-->
+<!--								&lt;!&ndash; <field name="name"/> &ndash;&gt;-->
+<!--								&lt;!&ndash; <field name="is_extra_work" /> &ndash;&gt;-->
+<!--							</tree>-->
+<!--						</field>-->
+<!--					</page>-->
 
 					<page string="Project Status" invisible="1">
 						<group>
@@ -444,46 +603,52 @@
 					<field name="date" invisible="True" />
 				</xpath>
 				<xpath expr="//group/group[1]" position="replace">
-					<group col="4">
-						<field name="user_id" string="Project Manager" colspan="2"
-							attrs="{'readonly':[('state','in',['close', 'cancelled'])]}" required="1"
-							context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_manager']}" />
-						<field name="partner_id" on_change="onchange_partner_id(partner_id)"
-							colspan="2" string="Awarder" />
-						<field name="company_contractor_id" required="1" options="{'no_create':True}"/>
+					<group>
+						<group>
+							<field name="user_id" string="Project Manager"
+								   attrs="{'readonly':[('state','in',['close', 'cancelled'])]}" required="1"
+								   context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_manager']}" />
+						</group>
+						<group>
+
+
+						</group>
+<!--						<field name="partner_id" on_change="onchange_partner_id(partner_id)"-->
+<!--							colspan="2" string="Awarder" />-->
+<!--						<field name="company_contractor_id" required="1" options="{'no_create':True}"/>-->
 						<!-- <field name="civil_contractor" colspan="2" string="Civil Contractor"
 							/> -->
 					</group>
 				</xpath>
 
 				<xpath expr="//group[1]" position="after">
-					<group>
-						<group col="5">
-							<field name="building_sqf" class="oe_inline" />
-							<!-- <p class="oe_inline"> X </p> -->
-							<field name="rate" />
-							<newline />
-							<field name="cent" />
-							<newline />
-							<field name="remark1" style="width: 380%%" />
+						<group col="8">
+<!--							<field name="building_sqf" class="oe_inline" />-->
+<!--							&lt;!&ndash; <p class="oe_inline"> X </p> &ndash;&gt;-->
+<!--							<field name="rate" />-->
+<!--							<newline />-->
+<!--							<field name="cent" />-->
+<!--							<newline />-->
+<!--							<field name="remark1" style="width: 380%%" />-->
 							<newline />
 							<field name="start_date" />
-							<newline />
 							<field name="date_end" />
+							<field name="expected_start" />
+						<field name="expected_end" />
 
 						</group>
-						<group col="2">
-							<!-- <field name="cent" /> <field name="building_sqf" /> <field name="rate"
-								/> -->
-							<field name="total_value" />
-							<field name="estimated_cost" />
-							<field name="estimated_cost_extra"
-								attrs="{'invisible':[('estimated_cost_extra','=', 0)]}" />
-							<field name="total_estimated_cost"
-								attrs="{'invisible':[('estimated_cost_extra','=', 0)]}" class="oe_inline" />
-							<button name="compute_estimated_cost" type="object" icon="gtk-refresh" />
-						</group>
-					</group>
+<!--						<group col="2">-->
+<!--							 <field name="cent"/>-->
+<!--							<field name="building_sqf"/>-->
+<!--							<field name="rate"/>-->
+<!--							<field name="total_value" />-->
+<!--							<field name="estimated_cost" />-->
+<!--							<field name="estimated_cost_extra"-->
+<!--								attrs="{'invisible':[('estimated_cost_extra','=', 0)]}" />-->
+<!--							<field name="total_estimated_cost"-->
+<!--								attrs="{'invisible':[('estimated_cost_extra','=', 0)]}" class="oe_inline" />-->
+<!--							<button name="compute_estimated_cost" type="object" icon="gtk-refresh" />-->
+<!--						</group>-->
 				</xpath>
 				<xpath expr="//notebook/page[@string='Project Stages']"
 					position="replace">
@@ -496,9 +661,15 @@
 					<div class="oe_title">
 						<label for="name" string="Project Name" />
 						<h1>
-							<field name="name" string="Project Name" />
+							<field name="name" string="Project Name" colspan="2"/>
 						</h1>
-						<label for="location_id" string="Project Locations" />
+
+						<label for="tender_id" string="Tender Number" />
+						<h2>
+							<field name="tender_id"/>
+						</h2>
+
+						<label for="project_location_ids" string="Project Locations" />
 						<h1>
 							<field name="project_location_ids" string="Project Location"
 								required="True" widget="many2many_tags"/>
@@ -508,6 +679,38 @@
 							<label for="use_tasks" string="Use Tasks" />
 						</div>
 					</div>
+<!--					<div class="oe_title">-->
+<!--&lt;!&ndash;					<group>&ndash;&gt;-->
+<!--&lt;!&ndash;						<group col="5">&ndash;&gt;-->
+
+<!--							<label for="name" string="Project Name" />-->
+<!--							<h1>-->
+<!--								<field name="name" string="Project Name" />-->
+<!--							</h1>-->
+<!--&lt;!&ndash;						</group>&ndash;&gt;-->
+<!--&lt;!&ndash;						<group col="5">&ndash;&gt;-->
+<!--							<label for="tender_id" string="Tender Number" />-->
+<!--							<field name="tender_id" />-->
+
+<!--&lt;!&ndash;						</group>&ndash;&gt;-->
+<!--&lt;!&ndash;					</group>&ndash;&gt;-->
+<!--&lt;!&ndash;					<group>&ndash;&gt;-->
+<!--&lt;!&ndash;						<group>&ndash;&gt;-->
+<!--							<h1>-->
+<!--								<field name="project_location_ids" string="Project Location"-->
+<!--									   required="True" widget="many2many_tags"/>-->
+<!--							</h1>-->
+<!--							<div name="options_active">-->
+<!--								<field name="use_tasks" class="oe_inline" />-->
+<!--								<label for="use_tasks" string="Use Tasks" />-->
+<!--							</div>-->
+<!--&lt;!&ndash;						</group>&ndash;&gt;-->
+<!--&lt;!&ndash;						<group>&ndash;&gt;-->
+
+<!--&lt;!&ndash;						</group>&ndash;&gt;-->
+<!--&lt;!&ndash;					</group>&ndash;&gt;-->
+
+<!--					</div>-->
 				</xpath>
 				<xpath expr="//div[@class='oe_chatter']" position="replace">
 				</xpath>
@@ -1798,7 +2001,7 @@ same stock location, same pricelist,same GST Rate calculation and same currency 
 			<field name="arch" type="xml">
 				<xpath expr="//notebook/page/group/group/field[@name='supplier']"
 					position="after">
-					<field name="contractor" />
+					<field name="contractor" string="Sub Contractor"/>
 				</xpath>
 			</field>
 		</record>

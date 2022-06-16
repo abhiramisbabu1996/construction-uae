@@ -27,6 +27,7 @@ class RejectionReason(models.Model):
 
 class HiworthTender(models.Model):
 	_name = 'hiworth.tender'
+	_rec_name = 'tender_no'
 
 	name = fields.Char('Work Name')
 	tender_code = fields.Char('Code')

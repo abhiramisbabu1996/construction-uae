@@ -2292,10 +2292,35 @@ class PartnerDailyStatementLine(models.Model):
 				raise osv.except_osv(_('warning!'), _("There is no accounts under this category"))
 
 		return res
+
+	task_category_id = fields.Many2one("task.category.details")
+	estimation_line_id = fields.Many2one('estimation.line')
+	no_labours = fields.Integer('No of Labours')
+	work_id = fields.Many2one('project.work', 'Description Of Work')
+	chainage_from = fields.Float('Chainage From')
+	chainage_to = fields.Float('Chainage To')
+	side = fields.Selection([('lhs', 'LHS'),
+							 ('rhs', 'RHS'),
+							 ('bhs', 'BHS')
+							 ], 'Side')
+	length = fields.Float('Length(M)')
+	qty_estimate = fields.Float('Qty As Per Estimate')
+	unit = fields.Many2one('product.uom', 'Unit')
+	duration = fields.Float('Duration(Days)')
+	start_date = fields.Date('Start Date')
+	finish_date = fields.Date('Finish Date')
+	employee_id = fields.Many2one('hr.employee', 'Employee')
+	veh_categ_id = fields.Many2many('vehicle.category.type', string='Machinery')
+	estimate_cost = fields.Float('Estimate Cost')
+	pre_qty = fields.Float('Previous Qty')
+	upto_date_qty = fields.Float(store=True, string='Balance Qty')
+	quantity = fields.Float(string='Work Order Qty')
+	subcontractor = fields.Many2one('project.task')
+	estimated_hrs = fields.Char('Time Allocated')
+
 	qty_no=fields.Float('Total Qty',compute='compute_qty_char')
 	rep = fields.Integer('Rep')
 	account_id = fields.Many2one('account.account', 'Account')
-	quantity = fields.Float('Quantity')
 	total = fields.Float('Total',compute='compute_total')
 	# category_id = fields.Many2one('labour.category', 'Category')
 	category_id = fields.Many2one('labour.category', compute='compute_category', store=True, string='Category')
@@ -2369,6 +2394,7 @@ class SupervisorStatementApprovers(models.Model):
 class OperatorDailyStatement(models.Model):
 	_name = 'operator.daily.statement'
 
+	estimation_id = fields.Many2one('estimation.estimation')
 	operator_id = fields.Many2one('partner.daily.statement')
 	date = fields.Date('Date')
 	employee_id = fields.Many2one('hr.employee', string="Operator", domain=[('user_category','=','operators')])
@@ -2571,6 +2597,7 @@ class ItemUsage(models.Model):
 		for rec in self:
 			rec.balance = round((rec.total - rec.usage),2)
 
+	estimation_id = fields.Many2one('estimation.estimation')
 	product_id = fields.Many2one('product.product', 'Item')
 	uom_id = fields.Many2one('product.uom', 'Item')
 	pre_qty = fields.Float('Pre. Balance',readonly=True)
@@ -2583,6 +2610,8 @@ class ItemUsage(models.Model):
 	rqrd_qty = fields.Float('Required Qty')
 	name = fields.Char('Description')
 	date = fields.Date('Date',default=fields.Date.today())
+	rate = fields.Float()
+	price = fields.Float()
 
 	@api.model
 	def create(self, vals):

@@ -244,12 +244,16 @@ class ProjectProject(models.Model):
 	drawing_sheet = fields.One2many('ir.attachment','drawing_id')
 	partner_id = fields.Many2one('res.partner','Awarder')
 	awarder_id = fields.Many2one('contract.awarder','Awarder')
-	site_engineer = fields.Many2one('hr.employee','SIte Engineer')
+	site_engineer1 = fields.Many2one('hr.employee', 'Site Engineer 1')
+	site_engineer2 = fields.Many2one('hr.employee', 'Site Engineer 2')
+	site_engineer3 = fields.Many2one('hr.employee', 'Site Engineer 3')
 	description = fields.Text('Description')
-	tender_id = fields.Many2one('hiworth.tender','Tender')
-	expected_start = fields.Date('Expected Start Date')
-	expected_end = fields.Date('Expected End Date')
-	contractor_id = fields.Many2one('res.partner',domain="[('contractor', '=', True)]", string='Contractor')
+
+	contractor_id1 = fields.Many2one('res.partner',domain="[('contractor', '=', True)]", string='Sub Contractor 1')
+	contractor_id2 = fields.Many2one('res.partner',domain="[('contractor', '=', True)]", string='Sub Contractor 2')
+	contractor_id3 = fields.Many2one('res.partner',domain="[('contractor', '=', True)]", string='Sub Contractor 3')
+
+
 
 
 

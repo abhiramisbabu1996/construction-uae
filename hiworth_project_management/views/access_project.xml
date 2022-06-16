@@ -7,49 +7,48 @@
 			<field name="model">project.project</field>
 			<field name="inherit_id" ref="project.edit_project" />
 			<field name="arch" type="xml">
-				<xpath expr="//group//group//field[@name='partner_id']" position="attributes">
-					<attribute name="string">Awarder</attribute>
-				</xpath>
-				<xpath expr="//group//group//field[@name='partner_id']" position="after">
+<!--				<xpath expr="//group//group//field[@name='partner_id']" position="attributes">-->
+<!--					<attribute name="string">Awarder</attribute>-->
+<!--				</xpath>-->
+<!--				<xpath expr="//group//group//field[@name='partner_id']" position="after">-->
 
-				</xpath>
+<!--				</xpath>-->
 				
 				<xpath expr="//sheet//div[@name='buttons']" position="inside">
 					 <button class="oe_inline oe_stat_button" name="reopen_project" type="object" string="Add Extra Work" confirm="Are You Sure To Reopen This Project??" groups="base.group_erp_manager,hiworth_project_management.group_manager" states="close"/>
 				</xpath>
 				
-				<xpath expr="//sheet//div//button//field" position="replace">
-					<field string="Estimations" name="task_count" widget="statinfo"/>
-				</xpath>
+<!--				<xpath expr="//sheet//div//button//field" position="replace">-->
+<!--					<field string="Estimations" name="task_count" widget="statinfo"/>-->
+<!--				</xpath>-->
 				<xpath expr="//group[1]" position="after">
-					<group>
-						<group>
-							<field name="expected_start" />
+					<group col="8">
+						<field name="contractor_id1" options="{'no_create':1}" />
+						<field name="contractor_id2" options="{'no_create':1}" />
+						<field name="contractor_id3" options="{'no_create':1}" />
+					</group>
+					<group col="6">
+						<field name="site_engineer1" options="{'no_create':1}" />
+						<field name="site_engineer2" options="{'no_create':1}" />
+						<field name="site_engineer3" options="{'no_create':1}" />
 					</group>
 					<group>
-						<field name="expected_end" />
-					</group>
-				</group>
-					<group>
 						<group>
-							<field name="site_engineer" options="{'no_create':1}" />
-							><field name="description" />
+							<field name="description" colspan="8"/>
 						</group>
 						<group>
-							<!-- <field name="keywords" widget="many2many_tags" string="Keywords/Tags"/> -->
-						
-							<field name="tender_id" />
-							<!-- <field name="awarder_id"/> -->
-							<field name="contractor_id" options="{'no_create':1}" />
-						
+
 						</group>
 					</group>
 					<group>
-						<group>
+						<group col="8">
 							<field name="village"/>
+							<newline />
 							<field name="taluk"/>
+							<newline />
 							<field name="district"/>
-							<field name="length"/>
+							<newline />
+<!--							<field name="length"/>							-->
 						</group>
 						<group>
 							<label for="latitude" string="GPS Co-ordinates"/>
@@ -120,23 +119,23 @@
 				<xpath expr="//header" position="attributes">
 					<attribute name="groups">base.group_erp_manager,hiworth_project_management.group_manager</attribute>
 				</xpath>
-				<xpath expr="//group//group//field[@name='building_sqf']" position="replace">
-				</xpath>
-				<xpath expr="//group//group//field[@name='rate']" position="replace">
-				</xpath>
-				<xpath expr="//group//group//field[@name='remark1']" position="replace">
-				</xpath>
-				<xpath expr="//group//group//field[@name='cent']" position="replace">
-				</xpath>
-				<xpath expr="//group//group//field[@name='total_value']" position="replace">
-				</xpath>
-				<xpath expr="//group//group//field[@name='estimated_cost']" position="replace">
-				</xpath>
+<!--				<xpath expr="//group//group//field[@name='building_sqf']" position="replace">-->
+<!--				</xpath>-->
+<!--				<xpath expr="//group//group//field[@name='rate']" position="replace">-->
+<!--				</xpath>-->
+<!--				<xpath expr="//group//group//field[@name='remark1']" position="replace">-->
+<!--				</xpath>-->
+<!--				<xpath expr="//group//group//field[@name='cent']" position="replace">-->
+<!--				</xpath>-->
+<!--				<xpath expr="//group//group//field[@name='total_value']" position="replace">-->
+<!--				</xpath>-->
+<!--				<xpath expr="//group//group//field[@name='estimated_cost']" position="replace">-->
+<!--				</xpath>-->
 
 				
-				<xpath expr="//page[1]" position="attributes">
-					<attribute name="string">Estimation</attribute>
-				</xpath>
+<!--				<xpath expr="//page[1]" position="attributes">-->
+<!--					<attribute name="string">Estimation</attribute>-->
+<!--				</xpath>-->
 				<xpath expr="//page[@string='Directory']" position="replace">
 					
 				</xpath>
@@ -228,12 +227,12 @@
 				<xpath expr="//page[@string='Modifications']" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</xpath>
-				
-				
-				<xpath expr="//group//group//button[@name='compute_estimated_cost']" position="attributes">
-					<attribute name="invisible">1</attribute>
-					
-				</xpath>
+
+
+<!--				<xpath expr="//group//group//button[@name='compute_estimated_cost']" position="attributes">-->
+<!--					<attribute name="invisible">1</attribute>-->
+
+<!--				</xpath>-->
 				<xpath expr="//page[@string='Team']" position="attributes">
 					<attribute name="groups">base.group_erp_manager,hiworth_project_management.group_manager,hiworth_project_management.group_user</attribute>
 				</xpath>
