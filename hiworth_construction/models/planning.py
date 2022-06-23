@@ -121,6 +121,7 @@ class PlanningChartLine(models.Model):
 	working_hours = fields.Float('Working Hours')
 	remarks = fields.Char('Remarks')
 	sqft = fields.Float('Square Feet')
+	estimated_cost = fields.Float('')
 
 
 class MasterPlanChartLine(models.Model):

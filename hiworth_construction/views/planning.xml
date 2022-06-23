@@ -38,8 +38,8 @@
 										<field name="no_labours" />
 										<field name="sqft" />
 										<field name="start_date" />
-										<field name="duration" />
-										<field name="finish_date" />
+										<field name="finish_date" string="Approximate Finish Date"/>
+										<field name="duration"/>
 										<field name="subcontractor"/>
 										<field name="remarks"/>
 									</tree>
@@ -48,7 +48,7 @@
 						</notebook>
 						<newline />
 						<notebook>
-							<page string="Planning Chart">
+							<page string="Estimation/Planning Chart">
 									<field name="planning_chart_line" nolabel="1">
 										<tree editable="bottom">
 											<field name="master_plan_line_id" string="Work plan"/>
@@ -60,15 +60,13 @@
 											<field name="uom_id"/>
 											<field name="material_qty"/>
 											<field name="sqft" />
+											<field name="estimated_cost" />
 											<field name="working_hours"/>
 											<field name="remarks" />
 										</tree>
 									</field>
 								</page>
-
 						</notebook>
-
-					<!-- </sheet> -->
 				</form>
 			</field>
 		</record>
@@ -162,7 +160,7 @@
 							</notebook>
 						<newline />
 							<notebook>
-								<page string="Planning Chart">
+								<page string="Estimation/Planning Chart">
 									<field name="planning_chart_line" nolabel="1">
 										<tree editable="bottom">
 											<field name="master_plan_line_id" string="Work plan"/>
@@ -174,6 +172,7 @@
 											<field name="uom_id"/>
 											<field name="material_qty"/>
 											<field name="sqft" />
+											<field name="estimated_cost" />
 											<field name="working_hours"/>
 											<field name="remarks" />
 										</tree>
@@ -234,7 +233,7 @@
 		</record>
 
 
-		<menuitem id="sub_menu_hiworth_planning_chart" parent="main_menu_hiworth_planning" name="Planning Chart" sequence="20" action="action_planning_chart"
+		<menuitem id="sub_menu_hiworth_planning_chart" parent="main_menu_hiworth_planning" name="Estimation/Planning Chart" sequence="20" action="action_planning_chart"
 				  groups="hiworth_hr_attendance.group_supervisor,base.group_erp_manager"/>
 
 

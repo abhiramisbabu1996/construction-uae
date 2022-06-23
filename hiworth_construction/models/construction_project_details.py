@@ -488,8 +488,6 @@ class project(models.Model):
     estimation_line_ids = fields.One2many('estimation.line', 'project_id')
     plan_id = fields.Many2one('master.plan')
 
-
-
     @api.depends('partner_id')
     def _onchange_acc_statement(self):
         debit = 0.0
@@ -679,6 +677,17 @@ class EstimationLine(models.Model):
     subcontractor = fields.Many2one('res.partner', domain=[('contractor', '=', True)])
     no_labours = fields.Integer()
     rate = fields.Float()
+
+
+    # @api.onchange('plan_line_id')
+    # def onchange_plan_line_id(self):
+    #     if self.project_id:
+    #         if self.project_id.plan_id:
+    #             return {'domain': {'plan_line_id': [('vehicle_id', '=', rec.vehicle_id.id)]}}
+
+
+
+
 
 
 class document_file(models.Model):

@@ -332,6 +332,7 @@ class PartnerDailyStatement(models.Model):
 	account_id = fields.Many2one('account.account', 'Account',compute='compute_employee_id')
 	location_ids = fields.Many2one('stock.location', 'Site', domain=[('usage','=','internal')])
 	line_ids = fields.One2many('partner.daily.statement.line', 'report_id', 'Lines', domain=[('expense','!=',True)])
+	partner_line_ids = fields.One2many('partner.daily.statement.line', 'report_id')
 	expense_line_ids = fields.One2many('partner.daily.statement.expense', 'report_id', 'Lines')
 	mou_expense_line_ids = fields.One2many('partner.daily.statement.mou.line', 'report_id', 'Lines')
 	pre_balance = fields.Float('Pre. Balance',compute='compute_employee_id')
