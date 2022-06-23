@@ -82,8 +82,7 @@
 								  />
 <!--							<field name="account_id" required="True" />-->
 							<field name="date" required="True" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}" />
-
-                                <field name="project_id"/>
+							<field name="project_id"/>
 							<field name="location_ids" required="True" options="{'no_create': True, 'no_create_edit':True}" attrs="{'readonly':[('state','in',('confirmed','approved','checked','cancelled'))]}"/>
 							<field name="reception" invisible="1" />
 							<field name="transfer" invisible="1" />
@@ -111,23 +110,18 @@
 							<field name="line_ids" nolabel="1">
 								<tree editable="bottom">
 									<field name="estimation_line_id" options="{'no_create':True, 'no_create_edit':True}" string="Item of work"/>
-
-<!--									<field name="work_id"/>-->
-	<!--								<field name="employee_id" string="Supervisor"/>-->
+									<field name="work_id"/>
 									<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-									<field name="chainage_from"/>
-									<field name="chainage_to"/>
-									<field name="side"/>
-									<field name="length"/>
 									<field name="no_labours"/>
+									<field name="product_id" options="{'no_create':1}" widget="many2many_tags"/>
 									<field name="unit"/>
-									<field name="qty_estimate"/>
+<!--									<field name="qty_estimate"/>-->
 									<field name="quantity"/>
-									<field name="pre_qty"/>
-									<field name="upto_date_qty"/>
-									<field name="estimated_hrs" string="Estimated hours"/>
+<!--									<field name="pre_qty"/>-->
+<!--									<field name="upto_date_qty"/>-->
 									<field name="rate"/>
 									<field name="estimate_cost"/>
+									<field name="estimated_hrs" string="Estimated hours"/>
 
 							</tree>
 						</field>

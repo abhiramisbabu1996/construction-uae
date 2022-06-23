@@ -117,15 +117,16 @@
 						<field name="estimation_line_ids" nolabel="1">
 							<tree editable="bottom">
 								<field name="category_id"/>
-								<field name="work_id"/>
+<!--								<field name="work_id"/>-->
+								<field name="sqft"/>
 <!--								<field name="employee_id" string="Supervisor"/>-->
 <!--								<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>-->
-								<field name="chainage_from"/>
-								<field name="chainage_to"/>
+<!--								<field name="chainage_from"/>-->
+<!--								<field name="chainage_to"/>-->
 <!--								<field name="side"/>-->
 <!--								<field name="length"/>-->
 <!--								<field name="no_labours"/>-->
-								<field name="qty_estimate"/>
+<!--								<field name="qty_estimate"/>-->
 <!--								<field name="unit"/>-->
 <!--								<field name="rate"/>-->
 								<field name="estimate_cost"/>
@@ -137,7 +138,7 @@
 <!--										<field name="pre_qty"/>-->
 <!--										<field name="upto_date_qty"/>-->
 <!--								<field name="estimated_hrs" />-->
-								<field name="work_loc" required="True" string="Work Location" />
+								<field name="work_loc" string="Work Location" />
 <!--								<field name="subcontractor"/>-->
 							</tree>
 						</field>
@@ -267,10 +268,10 @@
 										<field name="work_id"/>
 										<field name="employee_id" string="Superisor"/>
 										<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-										<field name="chainage_from"/>
-										<field name="chainage_to"/>
-										<field name="side"/>
-										<field name="length"/>
+<!--										<field name="chainage_from"/>-->
+<!--										<field name="chainage_to"/>-->
+<!--										<field name="side"/>-->
+<!--										<field name="length"/>-->
 										<field name="no_labours"/>
 										<field name="qty_estimate"/>
 										<field name="unit"/>
@@ -339,27 +340,25 @@
 			<field name="arch" type="xml">
 				<xpath expr="//notebook/page[@string='Team']" position="before">
 					<page string="Estimation">
+						<group col="8">
+							<field name="plan_id" string="Master Plan" options="{'no_create':1,'no_create_edit':1}"/>
+						</group>
 						<field name="estimation_line_ids" nolabel="1">
 							<tree editable="bottom">
-								<field name="category_id"/>
+								<field name="plan_line_id" string="Plan"/>
+<!--								<field name="category_id"/>-->
 								<field name="work_id"/>
-								<field name="employee_id" string="Superisor"/>
-								<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-								<field name="chainage_from"/>
-								<field name="chainage_to"/>
-								<field name="side"/>
-								<field name="length"/>
+<!--								<field name="employee_id" string="Superisor"/>-->
+								<field name="sqft"/>
 								<field name="no_labours"/>
+								<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
+								<field name="material" options="{'no_create':1}" widget="many2many_tags"/>
 								<field name="qty_estimate"/>
 								<field name="unit"/>
 								<field name="rate"/>
 								<field name="estimate_cost"/>
 								<field name="start_date"/>
-<!--										<field name="duration"/>-->
 								<field name="finish_date"/>
-<!--										<field name="quantity"/>-->
-<!--										<field name="pre_qty"/>-->
-<!--										<field name="upto_date_qty"/>-->
 								<field name="subcontractor"/>
 							</tree>
 						</field>
@@ -634,7 +633,7 @@
 							<field name="start_date" />
 							<field name="date_end" />
 							<field name="expected_start" />
-						<field name="expected_end" />
+							<field name="expected_end" />
 
 						</group>
 <!--						<group col="2">-->

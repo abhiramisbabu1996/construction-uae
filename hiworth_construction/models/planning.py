@@ -5,56 +5,54 @@ from dateutil.relativedelta import relativedelta
 
 class MasterPlan(models.Model):
 	_name = 'master.plan'
-	_rec_name = 'site_id'
 
-	site_id = fields.Many2one('stock.location',string="Planning/Programme")
-	package_no = fields.Char(string='Package No:')
-	length_km = fields.Float('Length In KM:')
+	name = fields.Char(string="Planning/Programme")
+	site_id = fields.Many2one('stock.location', string="Location")
+	no_floors = fields.Integer()
+	sqft = fields.Float('Square Feet')
 	completion_date = fields.Date('Completion Date')
 	target_date = fields.Date('Target Date')
 	master_plan_line = fields.One2many('master.plan.line','line_id')
+	planning_chart_line = fields.One2many('planning.chart.line','master_plan_id')
 	agreement_date = fields.Date('Agreement Date')
 	work_start_date = fields.Date('Work Start Date')
 	project_name = fields.Many2one('project.project', 'Project')
 	contractor_id = fields.Many2one('res.partner', string="Contractor")
-	work_id = fields.Many2one('project.work', 'Description Of Work')
+
 
 class MasterPlanLine(models.Model):
 	_name = 'master.plan.line'
+	_rec_name = "work_id"
 
 	line_id = fields.Many2one('master.plan')
-	work_id = fields.Many2one('project.work','Description Of Work')
-	chainage_from = fields.Float('Chainage From')
-	chainage_to = fields.Float('Chainage To')
-	side = fields.Selection([('lhs','LHS'),
-							('rhs','RHS'),
-							('bhs','BHS')
-							],'Side')
-	length = fields.Float('Length(M)')
+	work_id = fields.Many2one('project.work', 'Description Of Work')
 	qty_estimate = fields.Float('Qty As Per Estimate')
 	unit = fields.Many2one('product.uom','Unit')
 	duration = fields.Float('Duration(Days)')
+	no_labours = fields.Integer()
 	start_date = fields.Date('Start Date')
 	finish_date = fields.Date('Finish Date')
-	employee_id = fields.Many2one('hr.employee','Employee')
-	veh_categ_id = fields.Many2many('vehicle.category.type',string='Machinery')
+	employee_id = fields.Many2one('hr.employee', 'Site Engineer')
+	veh_categ_id = fields.Many2many('vehicle.category.type', string='Machinery')
+	products_id = fields.Many2many('product.product', string='Products')
 	estimate_cost = fields.Float('Estimate Cost')
-
+	sqft = fields.Float('Square Feet')
 	pre_qty = fields.Float('Previous Qty')
+	remarks = fields.Text()
 	upto_date_qty = fields.Float(store=True, string='Balance Qty')
 	quantity = fields.Float(string='Work Order Qty')
-	subcontractor = fields.Many2one('project.task')
-	
+	subcontractor = fields.Many2one('res.partner', domain=[('contractor', '=', True)])
+
 	@api.one
 	@api.onchange('start_date','duration')
 	def onchange_start_date(self):
-		if self.start_date and self.duration:			
+		if self.start_date and self.duration:
 			self.finish_date = datetime.strptime(self.start_date, "%Y-%m-%d") + timedelta(days=self.duration-1)
 
 	@api.one
 	@api.onchange('chainage_from','chainage_to')
 	def onchange_chainage_from(self):
-		if self.chainage_to:			
+		if self.chainage_to:
 			self.length = self.chainage_to - self.chainage_from
 
 
@@ -69,27 +67,86 @@ class PlanningChart(models.Model):
 	_rec_name = 'date'
 
 	supervisor_id = fields.Many2one('hr.employee','Name Of Supervisor/Captain')
-	site_id = fields.Many2one('stock.location',string="Planning/Programme")
-	date = fields.Date('Date')
+	site_id = fields.Many2one('master.plan', string="Planning/Programme")
+	work_plan_id = fields.Many2one('master.plan.line', string="Work Plan")
+	date = fields.Date('Creation Date')
 	planning_chart_line = fields.One2many('planning.chart.line','line_id')
 	duration_from = fields.Date("Duration From")
 	duration_to = fields.Date("Duration To")
+	master_plan_line = fields.One2many('master.plan.chart.line', 'chart_id')
+
+	@api.onchange('site_id')
+	def onchange_site_id(self):
+		list = []
+		for rec in self:
+			if rec.site_id:
+				for line in rec.site_id.master_plan_line:
+					list.append([0, 0, {'subcontractor': line.subcontractor.id,						
+										'quantity': line.quantity,
+										'upto_date_qty': line.upto_date_qty,
+										'remarks': line.remarks,
+										'pre_qty': line.pre_qty,
+										'sqft': line.sqft,
+										'estimate_cost': line.estimate_cost,
+										'products_id': line.products_id.ids,
+										'veh_categ_id': line.veh_categ_id.ids,
+										'employee_id': line.employee_id.id,
+										'finish_date': line.finish_date,
+										'start_date': line.start_date,
+										'no_labours': line.no_labours,
+										'duration': line.duration,
+										'unit': line.unit.id,
+										'qty_estimate': line.qty_estimate,
+										'work_id': line.work_id.id,
+										'line_id': line.line_id.id,
+										}])
+			rec.master_plan_line = list
+
 
 class PlanningChartLine(models.Model):
 	_name = 'planning.chart.line'
 
+	master_plan_id = fields.Many2one('master.plan')
+	master_plan_line_id = fields.Many2one('master.plan.line')
 	line_id = fields.Many2one('planning.chart')
 	date = fields.Date('Date')
-	work_id = fields.Char('Description')
-	labour = fields.Float('Labour')
+	work_id = fields.Char('Work Description')
+	labour = fields.Float('No of Labours')
 	veh_categ_id = fields.Many2many('vehicle.category.type',string='Machinery')
-	chainage = fields.Char('Working Location/Chainage')
 	qty = fields.Float('Qty')
 	target_qty = fields.Float('Target Qty')
-	material = fields.Many2one('product.product','Material')
+	material_qty = fields.Float('Material Qty')
+	material = fields.Many2many('product.product', string='Materials')
 	uom_id = fields.Many2one('product.uom',string="Units")
-	material_qty = fields.Float('Requirement Qty')
+	working_hours = fields.Float('Working Hours')
 	remarks = fields.Char('Remarks')
+	sqft = fields.Float('Square Feet')
+
+
+class MasterPlanChartLine(models.Model):
+	_name = 'master.plan.chart.line'
+	_rec_name = "work_id"
+
+	chart_id = fields.Many2one('planning.chart')
+	line_id = fields.Many2one('master.plan')
+	work_id = fields.Many2one('project.work', 'Description Of Work')
+	qty_estimate = fields.Float('Qty As Per Estimate')
+	unit = fields.Many2one('product.uom','Unit')
+	duration = fields.Float('Duration(Days)')
+	no_labours = fields.Integer()
+	start_date = fields.Date('Start Date')
+	finish_date = fields.Date('Finish Date')
+	employee_id = fields.Many2one('hr.employee', 'Site Engineer')
+	veh_categ_id = fields.Many2many('vehicle.category.type', string='Machinery')
+	products_id = fields.Many2many('product.product', string='Products')
+	estimate_cost = fields.Float('Estimate Cost')
+	sqft = fields.Float('Square Feet')
+	pre_qty = fields.Float('Previous Qty')
+	remarks = fields.Text()
+	upto_date_qty = fields.Float(store=True, string='Balance Qty')
+	quantity = fields.Float(string='Work Order Qty')
+	subcontractor = fields.Many2one('res.partner', domain=[('contractor', '=', True)])
+
 
 class DprStatus(models.Model):
 	_name = 'dpr.status'

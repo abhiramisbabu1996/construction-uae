@@ -11,50 +11,63 @@
 			<field name="name">form.master.plan</field>
 			<field name="model">master.plan</field>
 			<field name="arch" type="xml">
-				<form string="Master Plan" edit="false" create="false">
+				<form string="Master Plan">
 					<!-- <sheet> -->
 					<h1><center>MASTER PLAN</center></h1>
-					<group>
-						<field name="site_id" required="True" options="{'no_create':1}" />
-					</group>
+
 					<group col="4">
+						<field name="name" required="True"/>
+						<field name="site_id" required="True" options="{'no_create':1}" />
 						<field name="project_name" required="True"/>
-						<field name="contractor_id" required="True"/>
-						<field name="length_km" required="True" />
-						<field name="package_no" required="True" />
-						<field name="work_id"/>
-						<field name="completion_date" required="True" />
-						<field name="target_date" required="True" />
-						<field name="agreement_date" required="True" />
-						<field name="work_start_date" required="True" />
+<!--						<field name="contractor_id" required="True"/>-->
+						<field name="sqft" required="True" />
+						<field name="no_floors" required="True" />
+						<field name="completion_date"/>
+						<field name="target_date"/>
+						<field name="agreement_date"/>
+						<field name="work_start_date"/>
 					</group>
-					<group>
 						<notebook>
 							<page string="Master Plan">
 								<field name="master_plan_line" nolabel="1">
 									<tree editable="bottom">
 										<field name="work_id"/>
 										<field name="employee_id"/>
+										<field name="products_id" options="{'no_create':1}" widget="many2many_tags"/>
 										<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-										<field name="chainage_from" />
-										<field name="chainage_to" />
-										<field name="side" />
-										<field name="length" />
-										<field name="qty_estimate" />
-										<field name="estimate_cost"/>
-										<field name="unit" />
+										<field name="no_labours" />
+										<field name="sqft" />
 										<field name="start_date" />
 										<field name="duration" />
 										<field name="finish_date" />
-										<field name="quantity"/> 
-										<field name="pre_qty"/>
-										<field name="upto_date_qty"/>
 										<field name="subcontractor"/>
+										<field name="remarks"/>
 									</tree>
 								</field>
 							</page>
 						</notebook>
-					</group>
+						<newline />
+						<notebook>
+							<page string="Planning Chart">
+									<field name="planning_chart_line" nolabel="1">
+										<tree editable="bottom">
+											<field name="master_plan_line_id" string="Work plan"/>
+											<field name="date"/>
+											<field name="work_id"/>
+											<field name="labour"/>
+											<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
+											<field name="material" options="{'no_create':1}" widget="many2many_tags"/>
+											<field name="uom_id"/>
+											<field name="material_qty"/>
+											<field name="sqft" />
+											<field name="working_hours"/>
+											<field name="remarks" />
+										</tree>
+									</field>
+								</page>
+
+						</notebook>
+
 					<!-- </sheet> -->
 				</form>
 			</field>
@@ -67,7 +80,6 @@
 			<field name="arch" type="xml">
 				<search string="Master Plan">
 					<field name="site_id" />
-					<field name="package_no" />
 					<field name="completion_date" />
 					<field name="target_date" />
 					<group expand="0" string="group by">
@@ -75,7 +87,6 @@
 								context="{'group_by':'site_id'}"/>
 						<filter name="groupby_project" string="Project"
 								context="{'group_by':'project_name'}"/>
-						<filter name="groupby_package" context="{'group_by': 'package_no'}" string="Package no"  />
 						<filter name="groupby_compltion" context="{'group_by':'completion_date'}"
 								string="Complition date"/>
 						<filter name="groupby_target" context="{'group_by':'target_date'}"
@@ -93,8 +104,8 @@
 			<field name="arch" type="xml">
 				<tree string="Master Plan">
 					<field name="site_id" />
-					<field name="length_km" />
-					<field name="package_no" />
+					<field name="sqft" />
+					<field name="no_floors" />
 					<field name="completion_date" />
 					<field name="target_date" />
 				</tree>
@@ -121,39 +132,54 @@
 			<field name="model">planning.chart</field>
 			<field name="arch" type="xml">
 				<form string="Planning Chart">
-					<sheet>
 						<h1><center>PLANNING CHART</center></h1>
 
 						<group col="4">
-
-							<field name="supervisor_id" required="True" />
-							<field name="date" required="True" />
 							<field name="site_id" required="True" />
+							<field name="date" required="True" />
 							<field name="duration_from"  />
+							<field name="supervisor_id" required="True" />
 							<field name="duration_to"  />
 						</group>
-						<group>
+							<notebook>
+								<page string="Master Plan">
+									<field name="master_plan_line" nolabel="1" >
+										<tree create="false">
+											<field name="work_id"/>
+											<field name="employee_id"/>
+											<field name="products_id" options="{'no_create':1}" widget="many2many_tags"/>
+											<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
+											<field name="no_labours" />
+											<field name="sqft" />
+											<field name="start_date" />
+											<field name="duration" />
+											<field name="finish_date" />
+											<field name="subcontractor"/>
+											<field name="remarks"/>
+										</tree>
+									</field>
+								</page>
+							</notebook>
+						<newline />
 							<notebook>
 								<page string="Planning Chart">
 									<field name="planning_chart_line" nolabel="1">
 										<tree editable="bottom">
-											<field name="date" />
-											<field name="work_id" />
-											<field name="labour" />
+											<field name="master_plan_line_id" string="Work plan"/>
+											<field name="date"/>
+											<field name="work_id"/>
+											<field name="labour"/>
 											<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-											<field name="qty"/>
-											<field name="chainage"/>
-											<field name="target_qty"/>
-											<field name="material"/>
+											<field name="material" options="{'no_create':1}" widget="many2many_tags"/>
 											<field name="uom_id"/>
-											<field name="material_qty" />
+											<field name="material_qty"/>
+											<field name="sqft" />
+											<field name="working_hours"/>
 											<field name="remarks" />
 										</tree>
 									</field>
 								</page>
 							</notebook>
-						</group>
-					</sheet>
 				</form>
 			</field>
 		</record>
@@ -163,11 +189,11 @@
 			<field name="model">planning.chart</field>
 			<field name="arch" type="xml">
 				<tree string="Planning Chart">
-					<field name="date" />
-					<field name="supervisor_id" />
-					<field name="site_id" />
+					<field name="date"/>
+					<field name="supervisor_id"/>
+					<field name="site_id"/>
 				    <field name="duration_from"  />
-							<field name="duration_to"  />
+					<field name="duration_to"/>
 				</tree>
 			</field>
 		</record>
