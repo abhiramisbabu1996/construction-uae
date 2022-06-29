@@ -788,6 +788,15 @@
 				<xpath expr="//label[@for='name']" position="replace">
 					<label for="name" string="Resource Name" />
 				</xpath>
+<!--				<xpath expr="//div/div[@name='options']" position="after">-->
+<!--					<div class="oe_title" style="width: 100px;">-->
+<!--&lt;!&ndash;						<label for="categ_id" string="Resource Category" />&ndash;&gt;-->
+<!--						<h1>-->
+<!--							-->
+
+<!--						</h1>-->
+<!--					</div>-->
+<!--				</xpath>-->
 				<xpath expr="//div/div[@name='options']" position="before">
 					<newline />
 					<div class="oe_title" style="width: 150px;">
@@ -796,7 +805,15 @@
 							<field name="categ_id" class="oe_inline" />
 
 						</h1>
+						<h2>
+<!--						<label for="categ_id" string="Brand Name" /><newline />-->
+							<field name="pdt_brand_name" class="oe_inline" placeholder="Brand Name"/>
+						</h2>
+
+
 					</div>
+
+
 				</xpath>
 			</field>
 		</record>
