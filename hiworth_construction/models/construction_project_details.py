@@ -2824,6 +2824,8 @@ class product_template(models.Model):
     tyre_retread = fields.Boolean("Retread", default=False)
     gps = fields.Boolean("GPS",default=False)
 
+    pdt_brand_name = fields.Many2one('pdt.brand','Brand Name')
+
 
 
     @api.multi
@@ -2847,7 +2849,11 @@ class product_template(models.Model):
             print('aaaaaaaaaaaaaaaaaaaaaaaaaa')
         return super(product_template, self).unlink()
 
+class ProductBrand(models.Model):
+    _name = 'pdt.brand'
+    _rec_name = "b_name"
 
+    b_name = fields.Char("Brand Name")
 
 class purchase_order_line(models.Model):
     _inherit = 'purchase.order.line'
