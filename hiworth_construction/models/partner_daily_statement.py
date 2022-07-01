@@ -124,6 +124,26 @@ class PartnerReceivedItemt(models.Model):
 
 	product_id = fields.Many2one('product.product','Products')
 
+
+class LabourDetails(models.Model):
+	_name = 'new.labour.details'
+
+	name = fields.Char(string="Worker Name")
+	employee_id = fields.Many2one('hr.employee', string="Employee ID", rec_name='emp_code')
+	per_day_rate = fields.Float()
+	no_of_days = fields.Float()
+	Amount = fields.Float()
+	remarks = fields.Char()
+	partner_id = fields.Many2one('partner.daily.statement')
+
+	@api.onchange('employee_id')
+	def onchange_employee_id(self):
+		for rec in self:
+			if rec.employee_id:
+				rec.name = rec.employee_id.name
+
+
+
 class PartnerDailyStatement(models.Model):
 	_name = 'partner.daily.statement'
 	_order = 'date desc'
@@ -333,6 +353,8 @@ class PartnerDailyStatement(models.Model):
 	location_ids = fields.Many2one('stock.location', 'Site', domain=[('usage','=','internal')])
 	line_ids = fields.One2many('partner.daily.statement.line', 'report_id', 'Lines', domain=[('expense','!=',True)])
 	partner_line_ids = fields.One2many('partner.daily.statement.line', 'report_id')
+	particular_ids = fields.One2many('statement.particular', 'statement_id', 'Particulars')
+	new_labour_details_ids = fields.One2many('new.labour.details', 'partner_id')
 	expense_line_ids = fields.One2many('partner.daily.statement.expense', 'report_id', 'Lines')
 	mou_expense_line_ids = fields.One2many('partner.daily.statement.mou.line', 'report_id', 'Lines')
 	pre_balance = fields.Float('Pre. Balance',compute='compute_employee_id')
@@ -2295,6 +2317,7 @@ class PartnerDailyStatementLine(models.Model):
 		return res
 
 	task_category_id = fields.Many2one("task.category.details")
+	task_id = fields.Many2one("project.task")
 	estimation_line_id = fields.Many2one('estimation.line')
 	no_labours = fields.Integer('No of Labours')
 	work_id = fields.Many2one('project.work', 'Description Of Work')
@@ -2567,6 +2590,7 @@ class StatementParticular(models.Model):
 	category_id = fields.Many2one('labour.category', compute='compute_category', store=True, string='Category')
 	rate = fields.Float(compute='compute_rate', store=True, string='Rate')
 	line_id = fields.Many2one('partner.daily.statement.line', 'Line')
+	statement_id = fields.Many2one('partner.daily.statement', 'Line')
 
 
 	@api.onchange("account_id")

@@ -22,20 +22,20 @@
 <!--						<field name="contractor_id" required="True"/>-->
 						<field name="sqft" required="True" />
 						<field name="no_floors" required="True" />
+						<field name="work_start_date"/>
+						<field name="agreement_date"/>
 						<field name="completion_date"/>
 						<field name="target_date"/>
-						<field name="agreement_date"/>
-						<field name="work_start_date"/>
 					</group>
 						<notebook>
 							<page string="Master Plan">
-								<field name="master_plan_line" nolabel="1">
-									<tree editable="bottom">
+								<field name="master_plan_line" nolabel="1" readonly="1">
+									<tree>
 										<field name="work_id"/>
 										<field name="employee_id"/>
 										<field name="products_id" options="{'no_create':1}" widget="many2many_tags"/>
 										<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-										<field name="no_labours" />
+										<field name="no_labours" string="No of workers"/>
 										<field name="sqft" />
 										<field name="start_date" />
 										<field name="finish_date" string="Approximate Finish Date"/>
@@ -46,27 +46,28 @@
 								</field>
 							</page>
 						</notebook>
-						<newline />
-						<notebook>
-							<page string="Estimation/Planning Chart">
-									<field name="planning_chart_line" nolabel="1">
-										<tree editable="bottom">
-											<field name="master_plan_line_id" string="Work plan"/>
-											<field name="date"/>
-											<field name="work_id"/>
-											<field name="labour"/>
-											<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-											<field name="material" options="{'no_create':1}" widget="many2many_tags"/>
-											<field name="uom_id"/>
-											<field name="material_qty"/>
-											<field name="sqft" />
-											<field name="estimated_cost" />
-											<field name="working_hours"/>
-											<field name="remarks" />
-										</tree>
-									</field>
-								</page>
-						</notebook>
+<!--						<newline />-->
+<!--						<notebook>-->
+<!--							<page string="Estimation/Planning Chart">-->
+<!--									<field name="planning_chart_line" nolabel="1">-->
+<!--										<tree editable="bottom">-->
+<!--											<field name="mep"/>-->
+<!--											<field name="master_plan_line_id" string="Work plan"/>-->
+<!--											<field name="date"/>-->
+<!--											<field name="work_id"/>-->
+<!--											<field name="labour"/>-->
+<!--											<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>-->
+<!--											<field name="material" options="{'no_create':1}" widget="many2many_tags"/>-->
+<!--											<field name="uom_id"/>-->
+<!--											<field name="material_qty"/>-->
+<!--											<field name="sqft" />-->
+<!--											<field name="estimated_cost" />-->
+<!--											<field name="working_hours"/>-->
+<!--											<field name="remarks" />-->
+<!--										</tree>-->
+<!--									</field>-->
+<!--								</page>-->
+<!--						</notebook>-->
 				</form>
 			</field>
 		</record>
@@ -101,6 +102,8 @@
 			<field name="model">master.plan</field>
 			<field name="arch" type="xml">
 				<tree string="Master Plan">
+					<field name="name"/>
+					<field name="project_name"/>
 					<field name="site_id" />
 					<field name="sqft" />
 					<field name="no_floors" />
@@ -134,6 +137,7 @@
 
 						<group col="4">
 							<field name="site_id" required="True" />
+							<field name="project_id"/>
 							<field name="date" required="True" />
 							<field name="duration_from"  />
 							<field name="supervisor_id" required="True" />
@@ -147,7 +151,7 @@
 											<field name="employee_id"/>
 											<field name="products_id" options="{'no_create':1}" widget="many2many_tags"/>
 											<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
-											<field name="no_labours" />
+											<field name="no_labours" string="No of workers"/>
 											<field name="sqft" />
 											<field name="start_date" />
 											<field name="duration" />
@@ -163,10 +167,11 @@
 								<page string="Estimation/Planning Chart">
 									<field name="planning_chart_line" nolabel="1">
 										<tree editable="bottom">
+											<field name="mep"/>
 											<field name="master_plan_line_id" string="Work plan"/>
 											<field name="date"/>
 											<field name="work_id"/>
-											<field name="labour"/>
+											<field name="labour" string="No of workers"/>
 											<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
 											<field name="material" options="{'no_create':1}" widget="many2many_tags"/>
 											<field name="uom_id"/>
@@ -189,8 +194,9 @@
 			<field name="arch" type="xml">
 				<tree string="Planning Chart">
 					<field name="date"/>
-					<field name="supervisor_id"/>
 					<field name="site_id"/>
+					<field name="project_id"/>
+					<field name="supervisor_id"/>
 				    <field name="duration_from"  />
 					<field name="duration_to"/>
 				</tree>

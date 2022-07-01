@@ -19,6 +19,11 @@ class MasterPlan(models.Model):
 	project_name = fields.Many2one('project.project', 'Project')
 	contractor_id = fields.Many2one('res.partner', string="Contractor")
 
+	@api.onchange('project_name')
+	def onchange_project_name(self):
+		for rec in self:
+			rec.site_id = rec.project_name.project_location_ids.id
+
 
 class MasterPlanLine(models.Model):
 	_name = 'master.plan.line'
@@ -67,9 +72,10 @@ class PlanningChart(models.Model):
 	_rec_name = 'date'
 
 	supervisor_id = fields.Many2one('hr.employee','Name Of Supervisor/Captain')
+	project_id = fields.Many2one('project.project')
 	site_id = fields.Many2one('master.plan', string="Planning/Programme")
 	work_plan_id = fields.Many2one('master.plan.line', string="Work Plan")
-	date = fields.Date('Creation Date')
+	date = fields.Date('Creation Date', default=datetime.today())
 	planning_chart_line = fields.One2many('planning.chart.line','line_id')
 	duration_from = fields.Date("Duration From")
 	duration_to = fields.Date("Duration To")
@@ -80,6 +86,10 @@ class PlanningChart(models.Model):
 		list = []
 		for rec in self:
 			if rec.site_id:
+				rec.project_id = rec.site_id.project_name.id
+				rec.duration_to = rec.site_id.work_start_date
+				rec.duration_from = rec.site_id.completion_date
+				rec.master_plan_line = False
 				for line in rec.site_id.master_plan_line:
 					list.append([0, 0, {'subcontractor': line.subcontractor.id,						
 										'quantity': line.quantity,
@@ -103,11 +113,14 @@ class PlanningChart(models.Model):
 			rec.master_plan_line = list
 
 
+
+
 class PlanningChartLine(models.Model):
 	_name = 'planning.chart.line'
 
+	mep = fields.Selection([('mechanical', 'Mechanical'), ('electricel', 'Electrical'), ('plumbing', 'Plumbing')])
 	master_plan_id = fields.Many2one('master.plan')
-	master_plan_line_id = fields.Many2one('master.plan.line')
+	master_plan_line_id = fields.Many2one('master.plan.line', required=True)
 	line_id = fields.Many2one('planning.chart')
 	date = fields.Date('Date')
 	work_id = fields.Char('Work Description')
@@ -121,7 +134,42 @@ class PlanningChartLine(models.Model):
 	working_hours = fields.Float('Working Hours')
 	remarks = fields.Char('Remarks')
 	sqft = fields.Float('Square Feet')
-	estimated_cost = fields.Float('')
+	estimated_cost = fields.Float()
+
+	@api.onchange('master_plan_line_id')
+	def _onchage_master_plan_line_id(self):
+		for rec in self:
+			if rec.line_id.site_id:
+				return {'domain': {'master_plan_line_id': [('line_id', '=', rec.line_id.site_id.id)]}}
+
+	@api.model
+	def create(self, vals):
+		res = super(PlanningChartLine, self).create(vals)
+		project_id = res.line_id.project_id or res.master_plan_line_id.line_id.project_name
+		lines=[]
+		if project_id:
+			lines = [(0, 0, {
+				'subcontractor': res.master_plan_line_id.subcontractor.id,
+				'quantity': res.qty,
+				'upto_date_qty': res.master_plan_line_id.upto_date_qty,
+				'sqft': res.sqft,
+				'estimate_cost': res.estimated_cost,
+				'employee_id': res.master_plan_line_id.employee_id.id,
+				'finish_date': res.master_plan_line_id.finish_date,
+				'start_date': res.master_plan_line_id.start_date,
+				'no_labours': res.labour,
+				'duration': res.working_hours,
+				'unit': res.uom_id.id,
+				'qty_estimate': res.material_qty,
+				'material': res.material.ids,
+				'veh_categ_id': res.master_plan_line_id.veh_categ_id.ids,
+				'mep': res.mep,
+				'chart_plan_line_id': res.id,
+				'plan_line_id': res.master_plan_line_id.id,
+				'project_id': project_id.id,
+			})]
+			project_id.update({'estimation_line_ids': lines})
+		return res
 
 
 class MasterPlanChartLine(models.Model):

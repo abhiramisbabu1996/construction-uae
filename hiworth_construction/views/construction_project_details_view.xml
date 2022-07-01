@@ -50,85 +50,189 @@
 			</field>
 		</record>
 
+
+
+
+
+
+		<record id="project.view_task_form2" model="ir.ui.view">
+            <field name="name">project.task.form</field>
+            <field name="model">project.task</field>
+            <field eval="1" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Project">
+                    <header>
+                        <field name="stage_id" widget="statusbar" clickable="True"
+                            options="{'fold_field': 'fold'}"/>
+                    </header>
+                    <sheet string="Task">
+                    <div class="oe_right">
+                        <field name="kanban_state" class="oe_inline" widget="kanban_state_selection"/>
+                    </div>
+                    <h1>
+                        <field name="name" placeholder="Task summary..." class="oe_inline"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="project_id" domain="[('state','not in', ('close', 'cancelled'))]" on_change="onchange_project(project_id)" context="{'default_use_tasks':1}"/>
+                            <field name="user_id" string="Assigned By"
+								   readonly="1"
+                                options='{"no_open": True}'
+                                on_change="onchange_user_id(user_id, context)"
+                                context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}"/>
+                            <field name="reviewer_id"
+                                options='{"no_open": True}'
+								   invisible="1"
+                                context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}"/>
+                            <field name="planned_hours" widget="float_time"
+                                    groups="project.group_time_work_estimation_tasks"
+                                    on_change="onchange_planned(planned_hours, effective_hours)"/>
+                        </group>
+                        <group>
+                            <field name="date_deadline"/>
+                            <field name="categ_ids" widget="many2many_tags" invisible="1"/>
+                            <field name="progress" widget="progressbar"
+                                groups="project.group_time_work_estimation_tasks"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description" invisible="1">
+                            <field name="description" placeholder="Add a Description..."/>
+                            <field name="work_ids" groups="project.group_tasks_work_on_tasks">
+                                <tree string="Task Work" editable="top">
+                                    <field name="name"/>
+                                    <field name="hours" widget="float_time" sum="Spent Hours"/>
+                                    <field name="date"/>
+                                    <field name="user_id" context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}"/>
+                                </tree>
+                            </field>
+                            <group>
+                             <group class="oe_subtotal_footer oe_right" name="project_hours" groups="project.group_time_work_estimation_tasks">
+                                <field name="effective_hours" widget="float_time"/>
+                                <label for="remaining_hours" string="Remaining" groups="project.group_time_work_estimation_tasks"/>
+                                <div>
+                                    <field name="remaining_hours" widget="float_time" groups="project.group_time_work_estimation_tasks"/>
+                                </div>
+                                <field name="total_hours" widget="float_time" class="oe_subtotal_footer_separator"/>
+                             </group>
+                            </group>
+                            <div class="oe_clear"/>
+                        </page>
+                        <page string="Delegation" groups="project.group_delegate_task">
+                            <button name="%(project.action_project_task_delegate)d" string="Delegate" type="action"
+                                    groups="project.group_delegate_task"/>
+                            <separator string="Parent Tasks"/>
+                            <field name="parent_ids"/>
+                            <separator string="Delegated tasks"/>
+                            <field name="child_ids">
+                                <tree string="Delegated tasks">
+                                    <field name="name"/>
+                                    <field name="user_id"/>
+                                    <field name="stage_id"/>
+                                    <field name="effective_hours" widget="float_time"/>
+                                    <field name="progress" widget="progressbar"/>
+                                    <field name="remaining_hours" widget="float_time"/>
+                                    <field name="date_deadline"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Extra Info" invisible="1">
+                            <group col="4">
+                                <field name="priority" groups="base.group_user" widget="priority"/>
+                                <field name="sequence"/>
+                                <field name="partner_id"/>
+                                <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                            </group>
+                            <group>
+                                <group string="Gantt View">
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                </group>
+                                <group>
+                                    <field name="date_last_stage_update" groups="base.group_no_one"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+
+
+
+
+
 		<record id="view_task_form2_changed" model="ir.ui.view">
 			<field name="name">project.task.form.changed</field>
 			<field name="model">project.task</field>
 			<field eval="2" name="priority" />
 			<field name="inherit_id" ref="project.view_task_form2" />
 			<field name="arch" type="xml">
-				<header position="inside">
-					<button name="task_approve" type="object" states="draft"
-						string="Approve" class="oe_highlight" />
-					<button name="start_task" type="object" states="approved"
-						string="Start work" class="oe_highlight" />
-					<button name="complete_task" type="object" states="inprogress"
-						string="Mark as completed" class="oe_highlight" />
-					<button name="reset_task" type="object" string="Reset Estimation"
-						class="oe_highlight" />
-					<field name="state" widget="statusbar" />
-				</header>
-				<group>
-					<group col="2">
+<!--				<header position="inside">-->
+<!--					<button name="task_approve" type="object" states="draft"-->
+<!--						string="Approve" class="oe_highlight" />-->
+<!--					<button name="start_task" type="object" states="approved"-->
+<!--						string="Start work" class="oe_highlight" />-->
+<!--					<button name="complete_task" type="object" states="inprogress"-->
+<!--						string="Mark as completed" class="oe_highlight" />-->
+<!--					<button name="reset_task" type="object" string="Reset Estimation"-->
+<!--						class="oe_highlight" />-->
+<!--					<field name="state" widget="statusbar" />-->
+<!--				</header>-->
+				<xpath expr="//field[@name='date_deadline']" position="before">
 						<field name="date_start" />
-					</group>
-					<group col="2">
 						<field name="date_end" />
+				</xpath>
 						<!--						<field name="estimated_cost" />-->
-					</group>
-				</group>
-				<!--				BUREAUGREEN CUSTOM CODES-->
-                <xpath expr="//notebook/page[2]"
-					position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
 
-				<xpath expr="//notebook/page[3]"
-					position="attributes">
-					<attribute name="invisible">1</attribute>
-				</xpath>
-<!--				_____________________-->
-				
-				<xpath expr="//header/field[@name='stage_id']" position="replace">
-					<field name="stage_id" widget="statusbar" clickable="True"
-						invisible="True" options="{'fold_field': 'fold'}" />
-				</xpath>
-<!--				<xpath expr="//group/field[@name='date_deadline']" position="replace">-->
-<!--					<field name="date_deadline" invisible="True" />-->
+<!--				-->
+<!--				<xpath expr="//header/field[@name='stage_id']" position="replace">-->
+<!--					<field name="stage_id" widget="statusbar" clickable="True"-->
+<!--						invisible="True" options="{'fold_field': 'fold'}" />-->
 <!--				</xpath>-->
-				<xpath expr="//field[@name='user_id']" position="attributes">
-					<attribute name="readonly">0</attribute>
-					<attribute name="string">Assigned by</attribute>
-				</xpath>
-				<xpath expr="//field[@name='reviewer_id']" position="attributes">
-					<attribute name="string">Assigned To</attribute>
+<!--&lt;!&ndash;				<xpath expr="//group/field[@name='date_deadline']" position="replace">&ndash;&gt;-->
+<!--&lt;!&ndash;					<field name="date_deadline" invisible="True" />&ndash;&gt;-->
+<!--&lt;!&ndash;				</xpath>&ndash;&gt;-->
+				<xpath expr="//field[@name='user_id']" position="after">
+					<field name="employee_id"/>
+					<field name="reviewer2_id" string="Reviewer"/>
 				</xpath>
 
 
-<!--				<xpath expr="//notebook/page[@string='Description']" position="before">-->
-<!--					<page string="Estimation">-->
-<!--						<field name="estimate_ids">-->
-<!--							<tree string="Task Work" editable="bottom">-->
-<!--								&lt;!&ndash; <field name="line_no" /> &ndash;&gt;-->
-<!--								<field name="pro_id" required="True" />-->
-<!--								<field name="name" />-->
-<!--								<field name="qty" required="True" />-->
-<!--								<field name="uom" />-->
-<!--								<field name="unit_price" />-->
-<!--								<field name="estimated_cost_sum" sum="Total" />-->
-<!--								<field name="trigger_project_estimation_calc" invisible="1" />-->
-<!--							</tree>-->
-<!--						</field>-->
-<!--					</page>-->
+
+
+<!--&lt;!&ndash;				<xpath expr="//notebook/page[@string='Description']" position="before">&ndash;&gt;-->
+<!--&lt;!&ndash;					<page string="Estimation">&ndash;&gt;-->
+<!--&lt;!&ndash;						<field name="estimate_ids">&ndash;&gt;-->
+<!--&lt;!&ndash;							<tree string="Task Work" editable="bottom">&ndash;&gt;-->
+<!--&lt;!&ndash;								&lt;!&ndash; <field name="line_no" /> &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;								<field name="pro_id" required="True" />&ndash;&gt;-->
+<!--&lt;!&ndash;								<field name="name" />&ndash;&gt;-->
+<!--&lt;!&ndash;								<field name="qty" required="True" />&ndash;&gt;-->
+<!--&lt;!&ndash;								<field name="uom" />&ndash;&gt;-->
+<!--&lt;!&ndash;								<field name="unit_price" />&ndash;&gt;-->
+<!--&lt;!&ndash;								<field name="estimated_cost_sum" sum="Total" />&ndash;&gt;-->
+<!--&lt;!&ndash;								<field name="trigger_project_estimation_calc" invisible="1" />&ndash;&gt;-->
+<!--&lt;!&ndash;							</tree>&ndash;&gt;-->
+<!--&lt;!&ndash;						</field>&ndash;&gt;-->
+<!--&lt;!&ndash;					</page>&ndash;&gt;-->
+<!--&lt;!&ndash;				</xpath>&ndash;&gt;-->
+<!--				<xpath expr="//h1//field[@name='name']" position="attributes">-->
+<!--					<attribute name="placeholder">Task Title</attribute>-->
 <!--				</xpath>-->
-				<xpath expr="//h1//field[@name='name']" position="attributes">
-					<attribute name="placeholder">Task Title</attribute>
-				</xpath>
 				<xpath expr="//notebook/page[@string='Description']" position="before">
-					<page string="Estimation">
+					<page string="Task Details">
 						<field name="estimation_line_ids" nolabel="1">
 							<tree editable="bottom">
-								<field name="category_id"/>
-<!--								<field name="work_id"/>-->
+								<field name="estimation_line_id" string="work name"/>
+								<field name="nature_of_work"/>
 								<field name="sqft"/>
 <!--								<field name="employee_id" string="Supervisor"/>-->
 <!--								<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>-->
@@ -140,7 +244,8 @@
 <!--								<field name="qty_estimate"/>-->
 <!--								<field name="unit"/>-->
 <!--								<field name="rate"/>-->
-								<field name="estimate_cost"/>
+<!--								<field name="estimate_cost"/>-->
+								<field name="assigned_date"/>
 								<field name="start_date"/>
 <!--										<field name="duration"/>-->
 								<field name="finish_date"/>
@@ -149,7 +254,7 @@
 <!--										<field name="pre_qty"/>-->
 <!--										<field name="upto_date_qty"/>-->
 <!--								<field name="estimated_hrs" />-->
-								<field name="work_loc" string="Work Location" />
+<!--								<field name="work_loc" string="Work Location" />-->
 <!--								<field name="subcontractor"/>-->
 							</tree>
 						</field>
@@ -171,38 +276,38 @@
 <!--						</field>-->
 <!--					</page>-->
 				</xpath>
-				<xpath expr="//notebook/page/group[2]" position="replace">
-					<group invisible="True">
-					</group>
-				</xpath>
-				<!-- <xpath expr="//group/group/field[@name='project_id']" position="before">
-					<field name="categ_id" /> </xpath> -->
-				<xpath expr="//group/group/field[@name='project_id']"
-					position="replace">
-					<field name="project_id" domain="[('state','not in', ('close', 'cancelled'))]"
-						required="True" on_change="onchange_project(project_id)" context="{'default_use_tasks':1}" />
-				</xpath>
-				<xpath expr="//group/group/field[@name='categ_ids']" position="replace">
-					<field name="planned_hours" widget="float_time" colspan="2"
-							groups="project.group_time_work_estimation_tasks" on_change="onchange_planned(planned_hours, effective_hours)" />
-				</xpath>
+<!--				<xpath expr="//notebook/page/group[2]" position="replace">-->
+<!--					<group invisible="True">-->
+<!--					</group>-->
+<!--				</xpath>-->
+<!--				&lt;!&ndash; <xpath expr="//group/group/field[@name='project_id']" position="before">-->
+<!--					<field name="categ_id" /> </xpath> &ndash;&gt;-->
+<!--				<xpath expr="//group/group/field[@name='project_id']"-->
+<!--					position="replace">-->
+<!--					<field name="project_id" domain="[('state','not in', ('close', 'cancelled'))]"-->
+<!--						required="True" on_change="onchange_project(project_id)" context="{'default_use_tasks':1}" />-->
+<!--				</xpath>-->
+<!--				<xpath expr="//group/group/field[@name='categ_ids']" position="replace">-->
+<!--					<field name="planned_hours" widget="float_time" colspan="2"-->
+<!--							groups="project.group_time_work_estimation_tasks" on_change="onchange_planned(planned_hours, effective_hours)" />-->
+<!--				</xpath>-->
 
-				<xpath expr="//group/group[1]" position="replace">
-					<group col="2">
-<!--						<field name="categ_id" />-->
-<!--						<field name="sub_categ_id" />-->
-						<field name="project_id" domain="[('state','not in', ('close', 'cancelled'))]"
-							required="True" on_change="onchange_project(project_id)" context="{'default_use_tasks':1}" />
-						<field name="user_id" options='{"no_open": True}'
-							on_change="onchange_user_id(user_id, context)"
-							context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}" string="Assigned To" readonly="1"/>
-						<field name="reviewer_id" options='{"no_open": True}'
-							context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}" />
+<!--				<xpath expr="//group/group[1]" position="replace">-->
+<!--					<group col="2">-->
+<!--&lt;!&ndash;						<field name="categ_id" />&ndash;&gt;-->
+<!--&lt;!&ndash;						<field name="sub_categ_id" />&ndash;&gt;-->
+<!--						<field name="project_id" domain="[('state','not in', ('close', 'cancelled'))]"-->
+<!--							required="True" on_change="onchange_project(project_id)" context="{'default_use_tasks':1}" />-->
+<!--						<field name="user_id" options='{"no_open": True}'-->
+<!--							on_change="onchange_user_id(user_id, context)"-->
+<!--							context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}" string="Assigned To" readonly="1"/>-->
+<!--						<field name="reviewer_id" options='{"no_open": True}'-->
+<!--							context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'project.group_project_user']}" />-->
 
-<!--						<field name="civil_contractor" string="Contractor"-->
-<!--							context="{'default_contractor': True, 'default_customer': False}" />-->
-					</group>
-				</xpath>
+<!--&lt;!&ndash;						<field name="civil_contractor" string="Contractor"&ndash;&gt;-->
+<!--&lt;!&ndash;							context="{'default_contractor': True, 'default_customer': False}" />&ndash;&gt;-->
+<!--					</group>-->
+<!--				</xpath>-->
 
 
 			</field>
@@ -213,7 +318,6 @@
 			<field eval="2" name="priority" />
 			<field name="inherit_id" ref="project.view_task_tree2" />
 			<field name="arch" type="xml">
-
 				<xpath expr="//field[@name='progress']" position="replace">
 					<field name="state" />
 				</xpath>
@@ -266,7 +370,6 @@
 						</group>
 						<group>
 							<field name="estimated_cost"/>
-							<field name="no_of_floors"/>
 							<field name="sqft"/>
 							<field name="end_date"/>
 						</group>
@@ -352,17 +455,15 @@
 			<field name="arch" type="xml">
 				<xpath expr="//notebook/page[@string='Team']" position="before">
 					<page string="Estimation">
-						<group col="8">
-							<field name="plan_id" string="Master Plan" options="{'no_create':1,'no_create_edit':1}"/>
-						</group>
 						<field name="estimation_line_ids" nolabel="1">
 							<tree editable="bottom">
-								<field name="plan_line_id" string="Plan"/>
+								<field name="mep"/>
+								<field name="plan_line_id" string="Work"/>
 <!--								<field name="category_id"/>-->
-								<field name="work_id"/>
+<!--								<field name="work_id"/>-->
 <!--								<field name="employee_id" string="Superisor"/>-->
 								<field name="sqft"/>
-								<field name="no_labours"/>
+								<field name="no_labours" string="No of workers"/>
 								<field name="veh_categ_id" options="{'no_create':1}" widget="many2many_tags"/>
 								<field name="material" options="{'no_create':1}" widget="many2many_tags"/>
 								<field name="qty_estimate"/>
@@ -788,15 +889,6 @@
 				<xpath expr="//label[@for='name']" position="replace">
 					<label for="name" string="Resource Name" />
 				</xpath>
-<!--				<xpath expr="//div/div[@name='options']" position="after">-->
-<!--					<div class="oe_title" style="width: 100px;">-->
-<!--&lt;!&ndash;						<label for="categ_id" string="Resource Category" />&ndash;&gt;-->
-<!--						<h1>-->
-<!--							-->
-
-<!--						</h1>-->
-<!--					</div>-->
-<!--				</xpath>-->
 				<xpath expr="//div/div[@name='options']" position="before">
 					<newline />
 					<div class="oe_title" style="width: 150px;">
@@ -805,15 +897,7 @@
 							<field name="categ_id" class="oe_inline" />
 
 						</h1>
-						<h2>
-<!--						<label for="categ_id" string="Brand Name" /><newline />-->
-							<field name="pdt_brand_name" class="oe_inline" placeholder="Brand Name"/>
-						</h2>
-
-
 					</div>
-
-
 				</xpath>
 			</field>
 		</record>
