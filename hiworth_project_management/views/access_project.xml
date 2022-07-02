@@ -313,12 +313,12 @@
 			<field eval="2" name="priority" />
 			<field name="inherit_id" ref="hiworth_construction.view_task_form2_changed" />
 			<field name="arch" type="xml">
-				<xpath expr="//header//button[@name='task_approve']" position="attributes">
-					<attribute name="groups">base.group_erp_manager,hiworth_project_management.group_manager</attribute>
+				<xpath expr="//header" position="attributes">
+<!--					<attribute name="groups">base.group_erp_manager,hiworth_project_management.group_manager</attribute>-->
 				</xpath>
-				<xpath expr="//header//button[@name='reset_task']" position="attributes">
-					<attribute name="groups">base.group_erp_manager,hiworth_project_management.group_manager</attribute>
-				</xpath>
+<!--				<xpath expr="//header//button[@name='reset_task']" position="attributes">-->
+<!--					<attribute name="groups">base.group_erp_manager,hiworth_project_management.group_manager</attribute>-->
+<!--				</xpath>-->
 			</field>
 		</record>
 
