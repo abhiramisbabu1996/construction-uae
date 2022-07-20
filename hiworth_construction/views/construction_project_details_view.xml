@@ -895,8 +895,9 @@
 						<label for="categ_id" string="Resource Category" />
 						<h1>
 							<field name="categ_id" class="oe_inline" />
-
 						</h1>
+						<label for="product_brand" string="Brand" />
+						<h1><field name="product_brand"/></h1>
 					</div>
 				</xpath>
 			</field>

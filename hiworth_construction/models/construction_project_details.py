@@ -2835,6 +2835,7 @@ class product_template(models.Model):
     tyre = fields.Boolean("Tyre", default=False)
     tyre_retread = fields.Boolean("Retread", default=False)
     gps = fields.Boolean("GPS",default=False)
+    product_brand = fields.Char()
 
 
 
