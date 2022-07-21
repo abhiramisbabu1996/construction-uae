@@ -130,7 +130,7 @@
         <menuitem id="menu_permenant_employee_daily_attendance_hiworth"
                   parent="hiworth_hr_attendance.menu_attendance_reports"
                   name="Daily Attendance Report"
-                  sequence="1"
+                  sequence="9"
                   action="hiworth_hr_attendance_view_employee_attendance_action"/>
 
 
